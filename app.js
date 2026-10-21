@@ -64,6 +64,7 @@ function showResult(){
 function home(){$('quiz').classList.add('hidden');$('result').classList.add('hidden');$('home').classList.remove('hidden');$('subjects').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 $('year-label') && ($('year-label').textContent=activeYear+' 年題庫');
 $('year-select')?.addEventListener('change',refreshYear);
+$('answer-mode')?.addEventListener('change',event=>{ state.answerMode=event.target.value; $('quiz-mode').textContent=state.answerMode==='immediate'?'答完一題看答案':'全部作答後看答案'; const reveal=$('reveal'); reveal.hidden=state.answerMode!=='immediate'; reveal.disabled=state.answerMode!=='immediate'; });
 document.querySelectorAll('[data-action="back-home"]').forEach(btn=>btn.addEventListener('click',home));
 document.querySelector('[data-action="scroll-subjects"]')?.addEventListener('click',()=>document.querySelector('#subjects').scrollIntoView({behavior:'smooth'}));
 document.querySelector('[data-action="quick-start"]')?.addEventListener('click',()=>startQuiz('01'));
