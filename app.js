@@ -16,7 +16,8 @@ function refreshYear(){
 function renderYearOptions(){
   const select = $('year-select'); if(!select) return;
   select.innerHTML = years.map(year => '<option value="'+year+'">'+year+' 年</option>').join('');
-  select.value = activeYear; select.addEventListener('change', refreshYear);
+  select.value = activeYear;
+  select.addEventListener('change', refreshYear);
 }
 function renderSubjects(){
   const grid = $('subject-grid'); if(!grid) return;
@@ -45,6 +46,7 @@ function renderQuestion(){
 }
 function choose(letter){
   if(state.answered) return;
+  state.answerMode=$('answer-mode')?.value || state.answerMode;
   const q=state.questions[state.index]; const correct=state.subject.answers?.[q.number-1]; state.answered=true; state.answers.push({number:q.number,selected:letter,correct});
   document.querySelectorAll('.option').forEach(btn=>{if(btn.dataset.option===letter)btn.classList.add('selected');});
   if(state.answerMode==='immediate') showAnswer(letter,correct); else { $('feedback').textContent='已記錄答案，完成全部題目後揭示結果。'; $('feedback').className='feedback'; $('next').disabled=false; }
@@ -64,7 +66,13 @@ function showResult(){
 function home(){$('quiz').classList.add('hidden');$('result').classList.add('hidden');$('home').classList.remove('hidden');$('subjects').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 $('year-label') && ($('year-label').textContent=activeYear+' 年題庫');
 $('year-select')?.addEventListener('change',refreshYear);
-$('answer-mode')?.addEventListener('change',event=>{ state.answerMode=event.target.value; $('quiz-mode').textContent=state.answerMode==='immediate'?'答完一題看答案':'全部作答後看答案'; const reveal=$('reveal'); reveal.hidden=state.answerMode!=='immediate'; reveal.disabled=state.answerMode!=='immediate'; });
+$('answer-mode')?.addEventListener('change',event=>{
+  state.answerMode=event.target.value;
+  $('quiz-mode').textContent=state.answerMode==='immediate'?'答完一題看答案':'全部作答後看答案';
+  const reveal=$('reveal');
+  reveal.hidden=state.answerMode!=='immediate';
+  reveal.disabled=state.answerMode!=='immediate';
+});
 document.querySelectorAll('[data-action="back-home"]').forEach(btn=>btn.addEventListener('click',home));
 document.querySelector('[data-action="scroll-subjects"]')?.addEventListener('click',()=>document.querySelector('#subjects').scrollIntoView({behavior:'smooth'}));
 document.querySelector('[data-action="quick-start"]')?.addEventListener('click',()=>startQuiz('01'));
