@@ -1,4 +1,4 @@
-const subjects = window.QUIZ_DATA || [];
+const subjects = (window.QUIZ_DATA || []).filter(item => !['05', '06'].includes(item.code));
 const subjectNames = {"01":"營建法規與實務","02":"建築結構","03":"建築構造與施工","04":"建築環境控制","05":"敷地計畫與都市設計","06":"建築計畫與設計"};
 const pdfs = {"01":"114_architect_01_law_question.pdf","02":"114_architect_02_structure_question.pdf","03":"114_architect_03_construction_question.pdf","04":"114_architect_04_environment_question.pdf","05":"114_architect_05_site_urban_question.pdf","06":"114_architect_06_planning_design_question.pdf"};
 const $ = (id) => document.getElementById(id);
