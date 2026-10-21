@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>建築師題庫練習室</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="回到首頁"><span class="brand-mark">A</span><span>建築師題庫練習室</span></a>
+      <span class="year-pill">114 年最新題庫</span>
+    </header>
+
+    <section id="home" class="hero view">
+      <div class="hero-copy">
+        <p class="eyebrow">ARCHITECT EXAM • PRACTICE LAB</p>
+        <h1>把每一題，變成<br><em>下一次進步。</em></h1>
+        <p class="hero-lede">從最新年度建築師考古題開始，選科目、即時練習，交卷後看懂自己的弱點。</p>
+        <div class="hero-actions"><button class="primary" data-action="quick-start">開始 10 題快練 <span>→</span></button><button class="text-button" data-action="scroll-subjects">瀏覽全部科目</button></div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="tower tower-back"></div><div class="tower tower-front"></div><div class="grid-lines"></div><div class="hero-note"><span>01</span><strong>BUILD<br>YOUR EDGE</strong></div></div>
+    </section>
+
+    <section class="stats-row" aria-label="題庫摘要">
+      <div><strong>234</strong><span>可練習選擇題</span></div><div><strong>04</strong><span>自動判分科目</span></div><div><strong>06</strong><span>完整題本科目</span></div><div><strong>10</strong><span>快練題數</span></div>
+    </section>
+
+    <section id="subjects" class="subjects-section view">
+      <div class="section-heading"><div><p class="eyebrow">CHOOSE YOUR STUDIO</p><h2>選一科，開始進場。</h2></div><p class="section-help">題目取自民國114年考選部公布之建築師題本。選擇題提供即時判分，設計與申論題保留題本閱讀。</p></div>
+      <div id="subject-grid" class="subject-grid"></div>
+    </section>
+
+    <section id="quiz" class="quiz-section view hidden">
+      <div class="quiz-top"><button class="back-button" data-action="back-home">← 返回科目</button><div class="quiz-title"><p class="eyebrow" id="quiz-kicker">PRACTICE MODE</p><h2 id="quiz-subject">科目</h2></div><div class="quiz-score"><span id="score-label">目前得分</span><strong id="score">0</strong></div></div>
+      <div class="progress-track"><div id="progress-bar"></div></div>
+      <div class="quiz-meta"><span id="question-count">第 1 / 10 題</span><span id="quiz-mode">隨機快練</span></div>
+      <article class="question-card"><div class="question-number" id="question-number">01</div><div class="question-content"><h3 id="question-stem">題目載入中…</h3><div id="options" class="options"></div><div id="feedback" class="feedback" role="status"></div></div></article>
+      <div class="quiz-actions"><button id="reveal" class="secondary">查看答案</button><button id="next" class="primary" disabled>下一題 <span>→</span></button></div>
+    </section>
+
+    <section id="result" class="result-section view hidden"><p class="eyebrow">SESSION COMPLETE</p><h2 id="result-title">完成這一輪練習。</h2><div class="result-card"><div class="result-ring"><strong id="result-score">0%</strong><span>正確率</span></div><div class="result-copy"><p id="result-summary"></p><div class="result-actions"><button class="primary" data-action="retry">再練一次 <span>↗</span></button><button class="secondary" data-action="back-home">選其他科目</button></div></div></div><div id="mistakes" class="mistakes"></div></section>
+
+    <footer><span>資料來源：考選部考畢試題查詢平臺</span><span>Local practice app · 114</span></footer>
+  </main>
+  <script src="app_data.js"></script><script src="app.js"></script>
+</body>
+</html>
