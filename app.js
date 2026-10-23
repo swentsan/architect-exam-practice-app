@@ -28,9 +28,9 @@ function renderSubjects(){
   }).join('');
   document.querySelectorAll('[data-start]').forEach(btn=>btn.addEventListener('click',()=>startQuiz(btn.dataset.start)));
 }
-function startQuiz(code){
+function startQuiz(code, limit=null){
   const subject = subjects.find(item=>item.code===code); if(!subject || !subject.questions?.length) return;
-  const pool=[...subject.questions].sort(()=>Math.random()-.5).slice(0,Math.min(10,subject.questions.length));
+  const pool=[...subject.questions].sort(()=>Math.random()-.5).slice(0,limit ? Math.min(limit,subject.questions.length) : subject.questions.length);
   state={subject,questions:pool,index:0,score:0,answers:[],answered:false,answerMode:$('answer-mode')?.value || 'immediate'};
   $('home').classList.add('hidden'); $('subjects').classList.add('hidden'); $('result').classList.add('hidden'); $('quiz').classList.remove('hidden');
   $('quiz-subject').textContent=subject.subject; $('quiz-kicker').textContent=activeYear+' YEAR · '+subject.questions.length+' QUESTIONS'; $('quiz-mode').textContent=state.answerMode==='immediate'?'答完一題看答案':'全部作答後看答案';
@@ -75,6 +75,6 @@ $('answer-mode')?.addEventListener('change',event=>{
 });
 document.querySelectorAll('[data-action="back-home"]').forEach(btn=>btn.addEventListener('click',home));
 document.querySelector('[data-action="scroll-subjects"]')?.addEventListener('click',()=>document.querySelector('#subjects').scrollIntoView({behavior:'smooth'}));
-document.querySelector('[data-action="quick-start"]')?.addEventListener('click',()=>startQuiz('01'));
+document.querySelector('[data-action="quick-start"]')?.addEventListener('click',()=>startQuiz('01',10));
 $('reveal')?.addEventListener('click',reveal); $('next')?.addEventListener('click',next); document.querySelector('[data-action="retry"]')?.addEventListener('click',()=>startQuiz(state.subject.code));
 renderYearOptions(); renderSubjects();
