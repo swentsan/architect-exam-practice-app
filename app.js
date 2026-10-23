@@ -24,7 +24,7 @@ function renderSubjects(){
   grid.innerHTML = subjects.map((item,index)=>{
     const count = item.questions?.length || 0;
     const isQuiz = count > 0 && (item.answers?.length || 0) >= count;
-    return '<article class="subject-card"><div><span class="subject-index">0'+(index+1)+' / STUDIO</span><h3>'+item.subject+'</h3><p>'+(isQuiz ? count+' 題可自動判分' : '申論／設計題本閱讀')+'</p></div><div class="card-bottom"><strong>'+(isQuiz?'QUIZ READY':'PDF READER')+'</strong>'+(isQuiz?'<button data-start="'+item.code+'">開始練習 →</button>':'<a class="pdf-link" href="'+pdfs[item.code]+'" target="_blank" rel="noreferrer">開啟題本 ↗</a>')+'</div></article>';
+    return '<article class="subject-card subject-card-'+item.code+'"><div><span class="subject-index">0'+(index+1)+' / STUDIO</span><div class="card-visual" aria-hidden="true"><span></span><i></i></div><h3>'+item.subject+'</h3><p>'+(isQuiz ? count+' 題可自動判分' : '申論／設計題本閱讀')+'</p></div><div class="card-bottom"><strong>'+(isQuiz?'QUIZ READY':'PDF READER')+'</strong>'+(isQuiz?'<button data-start="'+item.code+'">開始練習 <span>→</span></button>':'<a class="pdf-link" href="'+pdfs[item.code]+'" target="_blank" rel="noreferrer">開啟題本 <span>↗</span></a>')+'</div></article>';
   }).join('');
   document.querySelectorAll('[data-start]').forEach(btn=>btn.addEventListener('click',()=>startQuiz(btn.dataset.start)));
 }

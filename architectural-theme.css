@@ -1,0 +1,27 @@
+/* Architectural studio card system */
+.subject-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.subject-card{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;min-height:292px;padding:26px 22px 20px;background:linear-gradient(145deg,#fffefa 0%,#f5f3ed 100%);border:1px solid rgba(52,69,72,.24);box-shadow:8px 8px 0 rgba(52,69,72,.12);transition:transform .22s ease,box-shadow .22s ease}
+.subject-card:before{width:58px;border-top:4px solid var(--brick)}
+.subject-card:after{content:"";position:absolute;right:-24px;top:26px;width:92px;height:92px;border:1px solid rgba(52,69,72,.12);transform:rotate(45deg)}
+.subject-card:hover{transform:translateY(-6px);box-shadow:12px 14px 0 rgba(52,69,72,.16)}
+.subject-index{position:relative;z-index:1}
+.card-visual{position:relative;height:68px;margin:13px -4px 2px;border-top:1px solid rgba(52,69,72,.16);border-bottom:1px solid rgba(52,69,72,.16);background:linear-gradient(rgba(52,69,72,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(52,69,72,.08) 1px,transparent 1px);background-size:17px 17px}
+.card-visual:before,.card-visual:after,.card-visual span,.card-visual i{content:"";position:absolute;display:block;border:2px solid var(--slate);opacity:.82}
+.card-visual:before{left:12%;bottom:0;width:30%;height:48%;border-bottom:0;transform:skewY(-28deg)}
+.card-visual:after{right:12%;bottom:0;width:34%;height:62%;border-bottom:0;transform:skewY(28deg)}
+.card-visual span{left:38%;top:14%;width:24%;height:72%;border-width:1px;background:rgba(196,87,59,.12)}
+.card-visual i{left:18%;right:18%;bottom:0;border-width:1px 0 0;transform:skewY(-10deg)}
+.subject-card-02 .card-visual:before{left:14%;width:72%;height:64%;transform:none;border-bottom:2px solid var(--slate)}
+.subject-card-02 .card-visual:after{left:28%;right:auto;width:42%;height:38%;bottom:0;transform:none}
+.subject-card-03 .card-visual:before{left:10%;width:80%;height:35%;transform:none;border-bottom:2px solid var(--slate)}
+.subject-card-03 .card-visual:after{left:22%;right:auto;width:15%;height:72%;transform:none}
+.subject-card-04 .card-visual:before{left:18%;width:22%;height:68%;transform:none;border-bottom:0}
+.subject-card-04 .card-visual:after{right:18%;width:22%;height:68%;transform:none;border-bottom:0}
+.subject-card h3{position:relative;z-index:1;font-size:19px;line-height:1.25;margin:6px 0 8px;white-space:nowrap}
+.subject-card p{position:relative;z-index:1}
+.card-bottom{position:relative;z-index:1;margin-top:16px;padding-top:14px;border-top:1px solid rgba(52,69,72,.18)}
+.card-bottom button,.card-bottom .pdf-link{font-size:15px;letter-spacing:.04em}
+.card-bottom button span,.card-bottom .pdf-link span{display:inline-block;margin-left:4px;transition:transform .2s ease}
+.card-bottom button:hover span,.card-bottom .pdf-link:hover span{transform:translateX(4px)}
+@media(max-width:1050px) and (min-width:801px){.subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.subject-grid{grid-template-columns:1fr}.subject-card{min-height:260px}}
