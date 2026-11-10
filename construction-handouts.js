@@ -13,11 +13,12 @@ const params=new URLSearchParams(location.search);
 if(byId[params.get("topic")])$("handout-topic").value=params.get("topic");
 if(years.includes(params.get("year")))$("handout-year").value=params.get("year");
 if(["inline","end","none"].includes(params.get("answers")))$("answer-layout").value=params.get("answers");
+const cleanOption=o=>String(o==null?"":o).replace(/\s*代號[：:]\s*\d+\s*頁次[：:]\s*[\d－—–-]+\s*$/,"").trim();
 function answer(q){
  const raw=q.answer||"",keys=Array.from(new Set(raw.match(/[A-D]/g)||[]));
  const clean=/^[A-D](?:\s*(?:或|、|,|\/|\\||及|和|與)\s*[A-D])*$/.test(raw);
  if(!keys.length)return {text:"答案註記待核對",note:"既有答案欄位為特殊給分或編碼異常，請查看原答案公告。",flag:true};
- const text=keys.map(k=>k+" "+((q.options||[])[k.charCodeAt(0)-65]||"")).join("；或 ");
+ const text=keys.map(k=>k+" "+(cleanOption((q.options||[])[k.charCodeAt(0)-65])||"【選項內容缺漏，請核對原試卷】")).join("；或 ");
  return {text:text,note:clean?"":"原答案含特殊或編碼異常註記；此處列出可辨識字母，給分方式請核對原公告。",flag:!clean};
 }
 const figure=q=>/下圖|如圖|附圖|圖中|圖示|圖例|圖所示|圖\s*[一二三四五六七八九十0-9ＡＢＣＤA-D]|下表|表中|附表/.test(q.stem);
@@ -26,7 +27,7 @@ function question(q,n,layout){
  if(q.review)flags.push("分類需人工確認");
  if(a.flag)flags.push("答案註記待核對");
  if((q.options||[]).some(o=>/代號[：:]|頁次[：:]/.test(o)))flags.push("原題庫含頁尾殘留，選項請核對");
- const options=(q.options||[]).map((o,i)=>{const clean=String(o).replace(/\s*代號[：:]\s*\d+\s*頁次[：:]\s*[\d－—–-]+\s*$/,"").trim();return '<li><span class="letter">('+String.fromCharCode(65+i)+')</span><span class="option-text">'+esc(clean||"【選項內容缺漏，請核對原試卷】")+'</span></li>';}).join("");
+ const options=(q.options||[]).map((o,i)=>{const clean=cleanOption(o);return '<li><span class="letter">('+String.fromCharCode(65+i)+')</span><span class="option-text">'+esc(clean||"【選項內容缺漏，請核對原試卷】")+'</span></li>';}).join("");
  return '<article class="question" data-question-id="'+q.id+'"><p class="question-id">'+String(n+1).padStart(3,"0")+'　'+q.year+' 年 第 '+esc(q.number)+' 題'+(flags.length?'　<span class="flags">'+flags.join("／")+'</span>':"")+'</p><p class="question-stem">'+esc(q.stem)+'</p><ul class="options">'+options+'</ul>'+(figure(q)?'<p class="figure-note">【圖表提示】題幹提及圖表，目前文字題庫未收錄原圖，請搭配原試卷。</p>':"")+(layout==="inline"?'<p class="answer">答案　'+esc(a.text)+'</p>'+(a.note?'<p class="answer-note">'+esc(a.note)+'</p>':""):"")+'</article>';
 }
 function render(){
