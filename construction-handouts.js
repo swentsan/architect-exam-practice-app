@@ -26,7 +26,7 @@ function question(q,n,layout){
  if(q.review)flags.push("分類需人工確認");
  if(a.flag)flags.push("答案註記待核對");
  if((q.options||[]).some(o=>/代號[：:]|頁次[：:]/.test(o)))flags.push("原題庫含頁尾殘留，選項請核對");
- const options=(q.options||[]).map((o,i)=>{const clean=String(o).replace(/\\s*代號[：:]\\s*\\d+\\s*頁次[：:]\\s*[\\d－—–-]+\\s*$/,"").trim();return '<li><span class="letter">('+String.fromCharCode(65+i)+')</span><span class="option-text">'+esc(clean||"【選項內容缺漏，請核對原試卷】")+'</span></li>';}).join("");
+ const options=(q.options||[]).map((o,i)=>{const clean=String(o).replace(/\s*代號[：:]\s*\d+\s*頁次[：:]\s*[\d－—–-]+\s*$/,"").trim();return '<li><span class="letter">('+String.fromCharCode(65+i)+')</span><span class="option-text">'+esc(clean||"【選項內容缺漏，請核對原試卷】")+'</span></li>';}).join("");
  return '<article class="question" data-question-id="'+q.id+'"><p class="question-id">'+String(n+1).padStart(3,"0")+'　'+q.year+' 年 第 '+esc(q.number)+' 題'+(flags.length?'　<span class="flags">'+flags.join("／")+'</span>':"")+'</p><p class="question-stem">'+esc(q.stem)+'</p><ul class="options">'+options+'</ul>'+(figure(q)?'<p class="figure-note">【圖表提示】題幹提及圖表，目前文字題庫未收錄原圖，請搭配原試卷。</p>':"")+(layout==="inline"?'<p class="answer">答案　'+esc(a.text)+'</p>'+(a.note?'<p class="answer-note">'+esc(a.note)+'</p>':""):"")+'</article>';
 }
 function render(){
