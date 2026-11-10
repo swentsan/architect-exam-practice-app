@@ -5,15 +5,15 @@ const escape=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function
 const bank=window.QUIZ_DATA_BY_YEAR;
 if(!bank){$("count").textContent="題庫載入失敗，請重新整理網頁。";$("practice").disabled=true;return;}
 const all=ConstructionAtlas.build(bank);
-const topics=ConstructionAtlas.topics.concat([{id:"other",name:"其他／待分類",group:"需人工確認"}]);
+const topics=ConstructionAtlas.topics;
 const name=function(id){return (topics.find(function(t){return t.id===id;})||{}).name||id;};
 const years=Array.from(new Set(all.map(function(q){return q.year;})));
 let page=1, size=24, current=[],session=null;
 years.forEach(function(y){$("year").add(new Option(y+" 年",y));});
 topics.forEach(function(t){$("topic").add(new Option(t.name,t.id));});
-const pending=all.filter(function(q){return q.review;}).length;
-$("stats").innerHTML=[[years.length,"涵蓋年份"],[all.length.toLocaleString(),"歷年考題"],[ConstructionAtlas.topics.length,"研習主題"],[pending,"需人工確認分類"]].map(function(x){return '<div class="stat"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></div>';}).join("");
-function baseRows(){const y=$("year").value,s=$("search").value.trim().toLowerCase(),review=$("review").value;return all.filter(function(q){return (!y||q.year===y)&&(!review||q.review)&&(!s||[q.stem].concat(q.options||[]).join(" ").toLowerCase().includes(s));});}
+const reviewed=all.filter(function(q){return q.reviewed;}).length;
+$("stats").innerHTML=[[years.length,"涵蓋年份"],[all.length.toLocaleString(),"歷年考題"],[ConstructionAtlas.topics.length,"研習主題"],[reviewed,"逐題覆核題目"]].map(function(x){return '<div class="stat"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></div>';}).join("");
+function baseRows(){const y=$("year").value,s=$("search").value.trim().toLowerCase(),review=$("review").value;return all.filter(function(q){return (!y||q.year===y)&&(!review||q.reviewed)&&(!s||[q.stem].concat(q.options||[]).join(" ").toLowerCase().includes(s));});}
 function tags(q){return (q.sourceIssues&&q.sourceIssues.length?'<span class="tag pending">原題資料需核對</span>':"")+q.tags.map(function(t){return '<span class="tag">'+escape(name(t))+'</span>';}).join("")+(q.review?'<span class="tag pending">分類需人工確認</span>':"");}
 function answerKeys(q){return /一律給分/.test(q.answer)?['A','B','C','D']:(q.answer.match(/[A-D]/g)||[]);}
 function answerText(q){if(/一律給分|均給分|均予給分/.test(q.answer))return '答案：'+q.answer;const keys=Array.from(new Set(q.answer.match(/[A-D]/g)||[]));return keys.length?"答案："+keys.join(" 或 "):"特殊給分或答案格式待核對，請查看原答案公告（此題不自動計分）";}
@@ -36,7 +36,7 @@ $("clear").onclick=function(){["year","topic","review","search"].forEach(functio
 $("export").onclick=function(){
  const cell=function(s){let v=String(s==null?"":s);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';};
  const rows=[["年份","題號","主分類","相關主題","分類狀態","分類依據","題目","A","B","C","D","答案"]];
- current.forEach(function(q){rows.push([q.year,q.number,name(q.primary),q.tags.map(name).join("；"),q.review?"需人工確認":"自動初分",q.evidence.join("；"),q.stem].concat(q.options||[],[q.answer]));});
+ current.forEach(function(q){rows.push([q.year,q.number,name(q.primary),q.tags.map(name).join("；"),q.reviewed?"已逐題覆核":q.review?"需分類覆核":"主題分類",q.evidence.join("；"),q.stem].concat(q.options||[],[q.answer]));});
  const blob=new Blob(["\uFEFF"+rows.map(function(r){return r.map(cell).join(",");}).join("\r\n")],{type:"text/csv;charset=utf-8"});
  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=SubjectAtlas.current.name+"歷年考題分類_"+($("year").value||"全部年份")+".csv";a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);
 };
@@ -65,3 +65,4 @@ $("next").onclick=function(){
 };
 render();
 })();
+

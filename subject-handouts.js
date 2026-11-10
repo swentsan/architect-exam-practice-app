@@ -5,10 +5,10 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 if(!window.QUIZ_DATA_BY_YEAR||!window.ConstructionAtlas){$("lecture").textContent="題庫載入失敗，請重新整理。";return;}
 const config=SubjectAtlas.current;
 document.getElementById("lecture-subject-title").textContent=config.name+" 主題講義";
-document.getElementById("back-topics").href="subject-topics.html?subject="+config.id;
+document.getElementById("back-topics").href=config.id==="construction"?"construction-topics.html":"subject-topics.html?subject="+config.id;
 if(config.notice){const n=document.createElement("p");n.className="print-note";n.textContent=config.notice;document.querySelector(".toolbar h1").after(n);}
 const rows=ConstructionAtlas.build(window.QUIZ_DATA_BY_YEAR);
-const topics=ConstructionAtlas.topics.concat([{id:"other",name:"其他待分類",group:"補充附錄"}]);
+const topics=ConstructionAtlas.topics;
 const years=Array.from(new Set(rows.map(q=>q.year)));
 const byId=Object.fromEntries(topics.map(t=>[t.id,t]));
 topics.forEach((t,i)=>$("handout-topic").add(new Option(String(i+1).padStart(2,"0")+" "+t.name,t.id)));
@@ -40,20 +40,20 @@ function render(){
  const topic=$("handout-topic").value,year=$("handout-year").value,layout=$("answer-layout").value;
  const selected=rows.filter(q=>(!topic||q.primary===topic)&&(!year||q.year===year));
  const chosen=topics.filter(t=>(!topic||t.id===topic)&&selected.some(q=>q.primary===t.id));
- const flagged=selected.filter(q=>q.review).length,bad=selected.filter(q=>answer(q).flag).length;
+ const flagged=selected.filter(q=>q.review).length,reviewed=selected.filter(q=>q.reviewed).length,bad=selected.filter(q=>answer(q).flag).length;
  document.title=config.name+" "+(topic?byId[topic].name:"主題合訂本")+(year?" "+year+"年":" 100-114年");
- $("status").textContent=selected.length+" 題・"+chosen.length+" 個章節・"+flagged+" 題分類需確認・"+bad+" 題答案註記待核對";
+ $("status").textContent=selected.length+" 題・"+chosen.length+" 個章節・"+reviewed+" 題已逐題覆核・"+bad+" 題答案註記待核對";
  $("print").disabled=!selected.length;$("download").disabled=!selected.length;
  let html="";
  if(!topic){
- html='<section class="cover"><h1 class="cover-title">'+esc(config.name)+'<br>歷年主題題目與答案講義</h1><p class="subtitle">'+(year?year+" 年":"100–114 年")+'　共 '+selected.length+' 題</p><p class="intro">本講義依原練習題庫的主分類編排，每題僅收錄一次，保留年份、原題號與選項。各章依年份由新到舊、題號由小到大排列。供主題複習與原題查找使用。</p>'+ (config.notice?'<p class="intro">'+esc(config.notice)+'</p>':'') +'<p class="intro">分類為自動初分，標示需確認的題目請人工核對。圖表提示題需搭配原試卷；特殊符號缺字以□標示，公式與上下標請核對原題。答案沿用既有題庫，特殊或編碼異常的答案註記不另行推定。'+(layout==="end"?"各章末列出答案。":layout==="none"?"本版僅列題目，不顯示答案。":"答案列於每題下方。")+'</p><table class="toc"><thead><tr><th>章節</th><th>題數</th></tr></thead><tbody>'+chosen.map((t,i)=>'<tr><td><a href="#chapter-'+t.id+'">'+String(i+1).padStart(2,"0")+' '+esc(t.name)+'</a></td><td>'+selected.filter(q=>q.primary===t.id).length+'</td></tr>').join("")+'</tbody></table><p class="intro">資料整理日期 2026 年 11 月 11 日<br>列印建議 A4 100% 比例 雙面長邊翻頁 左側裝訂</p><p class="source-note">題目與答案來源：本專案 quiz_data_years_v4.js。依科目知識架構進行自動初分，不代表官方分類。</p></section>';
+ html='<section class="cover"><h1 class="cover-title">'+esc(config.name)+'<br>歷年主題題目與答案講義</h1><p class="subtitle">'+(year?year+" 年":"100–114 年")+'　共 '+selected.length+' 題</p><p class="intro">本講義依原練習題庫的主分類編排，每題僅收錄一次，保留年份、原題號與選項。各章依年份由新到舊、題號由小到大排列。供主題複習與原題查找使用。</p>'+ (config.notice?'<p class="intro">'+esc(config.notice)+'</p>':'') +'<p class="intro">分類依考點整理，原待確認題目已逐題覆核。圖表提示題需搭配原試卷；特殊符號缺字以□標示，公式與上下標請核對原題。答案沿用既有題庫，特殊或編碼異常的答案註記不另行推定。'+(layout==="end"?"各章末列出答案。":layout==="none"?"本版僅列題目，不顯示答案。":"答案列於每題下方。")+'</p><table class="toc"><thead><tr><th>章節</th><th>題數</th></tr></thead><tbody>'+chosen.map((t,i)=>'<tr><td><a href="#chapter-'+t.id+'">'+String(i+1).padStart(2,"0")+' '+esc(t.name)+'</a></td><td>'+selected.filter(q=>q.primary===t.id).length+'</td></tr>').join("")+'</tbody></table><p class="intro">資料整理日期 2026 年 11 月 11 日<br>列印建議 A4 100% 比例 雙面長邊翻頁 左側裝訂</p><p class="source-note">題目與答案來源：本專案 quiz_data_years_v4.js。依科目知識架構整理，原待確認題目留存逐題覆核理由；分類不代表官方命題分類。</p></section>';
  }
  html+=chosen.map((t,i)=>{
  const qs=selected.filter(q=>q.primary===t.id).sort((a,b)=>Number(b.year)-Number(a.year)||Number(a.number)-Number(b.number));
  return '<section class="topic-section" id="chapter-'+t.id+'"><h2 class="topic-heading">'+String(topics.findIndex(x=>x.id===t.id)+1).padStart(2,"0")+' '+esc(t.name)+'</h2><p class="topic-description">'+(year?year+" 年":"100–114 年")+'　共 '+qs.length+' 題　主分類收錄'+(t.id==="other"?"　以下題目尚未確定主題":"")+'</p>'+(config.notice?'<p class="intro">'+esc(config.notice)+'</p>':'')+qs.map((q,n)=>question(q,n,layout)).join("")+(layout==="end"?'<section class="answer-key"><h3>'+esc(t.name)+' 答案</h3>'+qs.map(q=>{const a=answer(q);return '<div class="key-item"><strong>'+q.year+' 年 第 '+esc(q.number)+' 題</strong>'+esc(a.text)+(a.note?'<div class="answer-note">'+esc(a.note)+'</div>':"")+'</div>';}).join("")+'</section>':"")+'</section>';
  }).join("");
  $("lecture").innerHTML=html||"<p>沒有符合條件的題目。</p>";
- window.HANDOUT_SUMMARY={total:selected.length,chapters:chosen.length,review:flagged,answerFlags:bad,ids:selected.map(q=>q.id)};
+ window.HANDOUT_SUMMARY={total:selected.length,chapters:chosen.length,review:flagged,reviewed:reviewed,answerFlags:bad,ids:selected.map(q=>q.id)};
 }
 ["handout-topic","handout-year","answer-layout"].forEach(id=>$(id).addEventListener("change",render));
 $("print").onclick=()=>window.print();
@@ -66,3 +66,4 @@ $("download").onclick=()=>{
 };
 render();
 })();
+

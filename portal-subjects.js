@@ -1,4 +1,4 @@
-/* 新增科目可在 LEARNING_SUBJECTS 追加入口；主題設定集中於 subject-catalog.js。 */
+/* 四科學習專區設定。 */
 window.LEARNING_SUBJECTS = [
   {
     "id": "architect-exam",
@@ -20,8 +20,9 @@ window.LEARNING_SUBJECTS = [
     "english": "BUILDING CONSTRUCTION",
     "description": "沿著材料、工法、性能與管理，按施工主題研讀考題，搭配題目與答案講義。",
     "meta": [
-      "15 個主題",
-      "1,200 題"
+      "19 個主題",
+      "1,200 題",
+      "分類完成"
     ],
     "href": "construction-topics.html",
     "action": "進入構造專題",
@@ -40,7 +41,8 @@ window.LEARNING_SUBJECTS = [
     "description": "從材料力學、結構分析到耐震設計，依主題練習歷年試題。",
     "meta": [
       "15 個主題",
-      "600 題"
+      "600 題",
+      "分類完成"
     ],
     "href": "subject-topics.html?subject=structure",
     "action": "進入結構專題",
@@ -58,8 +60,9 @@ window.LEARNING_SUBJECTS = [
     "english": "BUILDING LAW AND PRACTICE",
     "description": "從建築管理、土地使用到採購實務，依考試主題整理歷年法規題。",
     "meta": [
-      "19 個主題",
-      "1,200 題"
+      "21 個主題",
+      "1,200 題",
+      "分類完成"
     ],
     "href": "subject-topics.html?subject=law",
     "action": "進入法規專題",
@@ -77,8 +80,9 @@ window.LEARNING_SUBJECTS = [
     "english": "BUILDING ENVIRONMENTAL CONTROL",
     "description": "從熱光音環境到設備與節能，依主題串聯建築環控的歷年考題。",
     "meta": [
-      "15 個主題",
-      "600 題"
+      "16 個主題",
+      "600 題",
+      "分類完成"
     ],
     "href": "subject-topics.html?subject=environment",
     "action": "進入環控專題",

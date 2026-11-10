@@ -36,10 +36,21 @@ function build(bank){
  const subject=(bank[year]||[]).find(function(s){return s.subject==="建築構造與施工";});
  if(!subject)return;
  (subject.questions||[]).forEach(function(q,i){
-  const c=classify(q);rows.push(Object.assign({},q,c,{id:year+"-"+q.number,year:year,answer:String((subject.answers||[])[i]||q.answer||"").trim().toUpperCase()}));
+  const c=classify(q),decision=reviewData&&reviewData.decisions[year+"-"+q.number];
+  if(decision)Object.assign(c,{primary:decision.primary,tags:decision.tags.slice(),review:false,reviewed:true,evidence:[decision.reason],reviewReason:decision.reason});
+  const clean=root.SubjectAtlas?root.SubjectAtlas.clean:(s=>String(s||""));const repair=root.SubjectAtlas?root.SubjectAtlas.repair:(s=>({text:String(s||"")}));
+  const raw=[q.stem,...(q.options||[])],sourceIssues=[];
+  if(raw.some(s=>/代號[：:]|頁次[：:]/.test(s)))sourceIssues.push("原題含頁尾殘留");
+  if(raw.some(s=>/[\uE000-\uF8FF\u25a1]/.test(s)))sourceIssues.push("原題特殊符號請核對原試卷");
+  const options=(q.options||[]).map(s=>clean(s)||"【選項內容缺漏，請核對原試卷】");if(options.some(s=>s.includes("選項內容缺漏")))sourceIssues.push("選項缺漏");
+  rows.push(Object.assign({},q,c,{id:year+"-"+q.number,year,stem:clean(q.stem),options,sourceIssues,answer:repair((subject.answers||[])[i]||q.answer||"").text.trim().toUpperCase()}));
  });});return rows;
 }
-const api={topics:definitions,classify:classify,build:build};
+const reviewData=root.CLASSIFICATION_REVIEWS&&root.CLASSIFICATION_REVIEWS.construction;
+const topics=definitions.concat(reviewData?reviewData.addedTopics:[]);
+const api={topics,classify:classify,build:build};
+if(root.SubjectAtlas)root.SubjectAtlas.current={id:"construction",code:"03",name:"建築構造與施工",short:"構造",topics};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.ConstructionAtlas=api;
 })(typeof globalThis!=="undefined"?globalThis:this);
+

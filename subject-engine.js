@@ -25,6 +25,8 @@ const statutes=[
 ["文化資產保存法","heritage"],["住宅法","heritage"]
 ];
 function forSubject(config){
+ const reviewData=root.CLASSIFICATION_REVIEWS&&root.CLASSIFICATION_REVIEWS[config.id];
+ const displayTopics=config.topics.concat(reviewData?reviewData.addedTopics:[]);
  function classify(q){
   const stem=clean(q.stem).normalize("NFKC").toLowerCase(),opts=(q.options||[]).map(clean).join(" ").normalize("NFKC").toLowerCase();
   const includes=(text,word)=>/^[A-Za-z][A-Za-z0-9]{1,5}$/.test(word)?new RegExp("\\b"+word.toLowerCase()+"\\b").test(text):text.includes(word.toLowerCase());
@@ -68,14 +70,17 @@ function forSubject(config){
     if(options.some(x=>x.includes("選項內容缺漏")))sourceIssues.push("選項缺漏");
     if(originals.some(x=>/代號[：:]|頁次[：:]/.test(x)))sourceIssues.push("原題含頁尾殘留");
     if([stem,...options,answer].some(garbled))sourceIssues.push("原文字編碼待核對");
+    const decision=reviewData&&reviewData.decisions[year+"-"+q.number];
+    if(decision)classification={primary:decision.primary,tags:decision.tags.slice(),review:false,reviewed:true,evidence:[decision.reason],reviewReason:decision.reason};
     rows.push(Object.assign({},q,classification,{id:year+"-"+q.number,year,stem,originalStem,contextQuestions,options,answer,sourceIssues,encodingRecovered:originals.filter(x=>repair(x).repaired).length}));
    }
   }
   return rows;
  }
- return {config,topics:config.topics,classify,build};
+ return {config:Object.assign({},config,{topics:displayTopics}),topics:displayTopics,classify,build};
 }
 const api={repair,clean,forSubject};
-if(root.SUBJECT_CATALOG&&root.location){const id=new URLSearchParams(root.location.search).get("subject")||"structure";api.current=root.SUBJECT_CATALOG[id]||root.SUBJECT_CATALOG.structure;root.ConstructionAtlas=forSubject(api.current);}
+if(root.SUBJECT_CATALOG&&root.location){const id=new URLSearchParams(root.location.search).get("subject")||"structure";api.current=root.SUBJECT_CATALOG[id]||root.SUBJECT_CATALOG.structure;root.ConstructionAtlas=forSubject(api.current);api.current=root.ConstructionAtlas.config;}
 root.SubjectAtlas=api;if(typeof module!=="undefined"&&module.exports)module.exports=api;
 })(typeof globalThis!=="undefined"?globalThis:this);
+
